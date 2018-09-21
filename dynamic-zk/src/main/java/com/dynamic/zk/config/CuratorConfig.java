@@ -20,10 +20,15 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 
 /**
+ * <B>系统名称：</B>感知<BR>
+ * <B>模块名称：</B>感知-zk<BR>
+ * <B>中文类名：</B>感知-zk-CuratorConfig<BR>
+ * <B>概要说明：</B>CuratorConfig.java<BR>
+ *
  * @author ssk www.8win.com Inc.All rights reserved
+ * @since 2018年09月21日 下午 5:45
  * @version v1.0
- * @date 2018-09-18-上午 11:35
- */
+**/
 @Configuration
 public class CuratorConfig {
 

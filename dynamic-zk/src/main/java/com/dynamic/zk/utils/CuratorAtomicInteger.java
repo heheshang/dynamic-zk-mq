@@ -8,36 +8,58 @@ import org.apache.curator.framework.recipes.atomic.DistributedAtomicInteger;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.retry.RetryNTimes;
 
+/**
+ * <B>系统名称：</B><BR>
+ * <B>模块名称：</B>-<BR>
+ * <B>中文类名：</B>--CuratorAtomicInteger<BR>
+ * <B>概要说明：</B>CuratorAtomicInteger.java<BR>
+ *
+ * @author ssk www.8win.com Inc.All rights reserved
+ * @version v1.0
+ * @since 2018年09月21日 下午 5:43
+ **/
 public class CuratorAtomicInteger {
 
-	/** zookeeper地址 */
-	static final String CONNECT_ADDR = "localhost:2181";
-	/** session超时时间 */
-	static final int SESSION_OUTTIME = 5000;//ms
+    /**
+     * zookeeper地址
+     */
+    static final String CONNECT_ADDR = "localhost:2181";
 
-	public static void main(String[] args) throws Exception {
+    /**
+     * session超时时间
+     */
+    static final int SESSION_OUTTIME = 5000;//ms
 
-		//1 重试策略：初试时间为1s 重试10次
-		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 10);
-		//2 通过工厂创建连接
-		CuratorFramework cf = CuratorFrameworkFactory.builder()
-					.connectString(CONNECT_ADDR)
-					.sessionTimeoutMs(SESSION_OUTTIME)
-					.retryPolicy(retryPolicy)
-					.build();
-		//3 开启连接
-		cf.start();
-		//cf.delete().forPath("/super");
+    /**
+     * <B>方法名称：</B>sss<BR>
+     * <B>概要说明：</B>sss<BR>
+     *
+     * @param args ssss
+     * @return void
+     */
+    public static void main(String[] args) throws Exception {
+
+        //1 重试策略：初试时间为1s 重试10次
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 10);
+        //2 通过工厂创建连接
+        CuratorFramework cf = CuratorFrameworkFactory.builder()
+                .connectString(CONNECT_ADDR)
+                .sessionTimeoutMs(SESSION_OUTTIME)
+                .retryPolicy(retryPolicy)
+                .build();
+        //3 开启连接
+        cf.start();
+        //cf.delete().forPath("/super");
 
 
-		//4 使用DistributedAtomicInteger
-		DistributedAtomicInteger atomicIntger =
-				new DistributedAtomicInteger(cf, "/super", new RetryNTimes(3, 1000));
+        //4 使用DistributedAtomicInteger
+        DistributedAtomicInteger atomicIntger =
+                new DistributedAtomicInteger(cf, "/super", new RetryNTimes(3, 1000));
 
-		AtomicValue<Integer> value = atomicIntger.add(1);
-		System.out.println(value.succeeded());
-		System.out.println(value.postValue());	//最新值
-		System.out.println(value.preValue());	//原始值
+        AtomicValue<Integer> value = atomicIntger.add(1);
+        System.out.println(value.succeeded());
+        System.out.println(value.postValue());    //最新值
+        System.out.println(value.preValue());    //原始值
 
-	}
+    }
 }

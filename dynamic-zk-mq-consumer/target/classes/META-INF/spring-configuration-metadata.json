@@ -1,0 +1,115 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq",
+      "type": "com.dynamic.zk.config.RocketmqProperties"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "name": "zookeeper",
+      "type": "com.dynamic.zk.config.CuratorProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "defaultValue": 0,
+      "name": "dynamic.rocketmq.consumer-batch-max-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "defaultValue": false,
+      "name": "dynamic.rocketmq.consumer-broadcasting",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.consumer-group-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.consumer-instance-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "defaultValue": false,
+      "name": "dynamic.rocketmq.enable-his-consumer",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "defaultValue": false,
+      "name": "dynamic.rocketmq.enable-order-consumer",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.namesrv-addr",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.producer-group-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.producer-instance-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.producer-tran-instance-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.subscribe",
+      "type": "java.util.List"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.RocketmqProperties",
+      "name": "dynamic.rocketmq.transaction-producer-group-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "name": "zookeeper.base-path",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "defaultValue": 0,
+      "name": "zookeeper.base-sleep-time-ms",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "name": "zookeeper.connect-string",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "defaultValue": 0,
+      "name": "zookeeper.connection-timeout-ms",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "defaultValue": 0,
+      "name": "zookeeper.max-retries",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.dynamic.zk.config.CuratorProperties",
+      "defaultValue": 0,
+      "name": "zookeeper.session-outtime",
+      "type": "java.lang.Integer"
+    }
+  ]
+}

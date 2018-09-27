@@ -2,6 +2,8 @@ package com.dynamic.zk.web;
 
 import com.dynamic.zk.mybatis.domain.DynamicMq;
 import com.dynamic.zk.mybatis.mapper.DynamicMqMapper;
+import com.dynamic.zk.service.CuratorAtomicService;
+import com.dynamic.zk.service.ZkNodeOperateService;
 import com.dynamic.zk.utils.FastJsonConvertUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
@@ -9,6 +11,7 @@ import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
@@ -27,6 +30,12 @@ public class TestController {
     @Autowired
     private DynamicMqMapper mqMapper;
 
+    @Autowired
+    private CuratorAtomicService curatorAtomicInteger;
+
+    @Autowired
+    private ZkNodeOperateService zkNodeOperateService;
+
     @Value("${zookeeper.basePath}")
     private String basePath;
 
@@ -41,7 +50,8 @@ public class TestController {
     public void add() throws Exception {
 
         DynamicMq mq = new DynamicMq();
-        mq.setProname("测试");
+        mq.setProname("test");
+        mq.setId(curatorAtomicInteger.getAtomicIntger(mq.getProname()));
         mq.setUrl("www.123.com ");
         mq.setTopic("TopicTest2");
         mq.setTag("TagB");
@@ -59,14 +69,8 @@ public class TestController {
         mq.setUpdateTime(new Date());
 
 
-//        mqMapper.insert(mq);
-        String path = basePath + "/" + mq.getGroupname() + ":" + mq.getTopic() + ":" + mq.getTag() + ":" + mq.getBusinesskey();
-        Stat stat = curatorFramework.checkExists().forPath(path);
-        if (stat == null) {
-            curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, FastJsonConvertUtil.convertObjectToJSON(mq).getBytes());
-        }else {
-            curatorFramework.setData().forPath(path, FastJsonConvertUtil.convertObjectToJSON(mq).getBytes());
-        }
+        String path = basePath + "/" + mq.getGroupname() + "_" + mq.getId();
+        zkNodeOperateService.createNode(path, FastJsonConvertUtil.convertObjectToJSON(mq));
 
     }
 
@@ -74,9 +78,10 @@ public class TestController {
     public void update() throws Exception {
 
         DynamicMq mq = new DynamicMq();
-        mq.setProname("测试");
+        mq.setProname("test");
         mq.setUrl("www.123.com ");
         mq.setTopic("TopicTest2");
+        mq.setId(3);
         mq.setTag("TagB");
         mq.setGroupname("TestGroup");
         mq.setConsumeformwhere("");
@@ -91,19 +96,32 @@ public class TestController {
         mq.setCreateTime(new Date());
         mq.setUpdateTime(new Date());
 
-        String path = basePath + "/" + mq.getGroupname() + ":" + mq.getTopic() + ":" + mq.getTag() + ":" + mq.getBusinesskey();
+        String path = basePath + "/" + mq.getGroupname() + "_" + mq.getId();
 
-        Stat stat = curatorFramework.checkExists().forPath(path);
-        if (stat == null) {
-            curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, FastJsonConvertUtil.convertObjectToJSON(mq).getBytes());
-        }else {
-            curatorFramework.setData().forPath(path, FastJsonConvertUtil.convertObjectToJSON(mq).getBytes());
-        }
+        zkNodeOperateService.updateNode(path, FastJsonConvertUtil.convertObjectToJSON(mq));
     }
 
-    @RequestMapping("/delete")
-    public void delete() throws Exception {
+    @RequestMapping("/delete/{path}")
+    public void delete(@PathVariable("path") String path) throws Exception {
 
-        curatorFramework.delete().guaranteed().deletingChildrenIfNeeded().forPath(basePath);
+        zkNodeOperateService.deleteNode(basePath+ "/" + path);
+    }
+
+    @RequestMapping("/delete/all")
+    public void deleteAll() throws Exception {
+
+        zkNodeOperateService.deleteAllNode(basePath);
+    }
+
+    @RequestMapping("/stop/all")
+    public void stopAll() throws Exception {
+
+        zkNodeOperateService.stopAllNode(basePath);
+    }
+
+    @RequestMapping("/start/all")
+    public void startAll() throws Exception {
+
+        zkNodeOperateService.startAllNode(basePath);
     }
 }

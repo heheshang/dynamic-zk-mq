@@ -4,13 +4,10 @@ import com.dynamic.zk.listener.ChildrenCacheListener;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.recipes.cache.NodeCache;
-import org.apache.curator.framework.recipes.cache.NodeCacheListener;
+import org.apache.curator.framework.recipes.atomic.DistributedAtomicInteger;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.curator.x.async.AsyncCuratorFramework;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.data.Stat;
+import org.apache.curator.retry.RetryNTimes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +23,9 @@ import javax.annotation.PostConstruct;
  * <B>概要说明：</B>CuratorConfig.java<BR>
  *
  * @author ssk www.8win.com Inc.All rights reserved
- * @since 2018年09月21日 下午 5:45
  * @version v1.0
-**/
+ * @since 2018年09月21日 下午 5:45
+ **/
 @Configuration
 public class CuratorConfig {
 
@@ -69,7 +66,7 @@ public class CuratorConfig {
     }
 
     @Bean
-    PathChildrenCache pathChildrenCache(CuratorFramework cf) {
+    public PathChildrenCache pathChildrenCache(CuratorFramework cf) {
         //建立一个PathChildrenCache缓存,第三个参数为是否接受节点数据内容 如果为false则不接受
         PathChildrenCache pathChildrenCache = new PathChildrenCache(cf, basePath, true);
         // 在初始化的时候就进行缓存监听
@@ -83,4 +80,6 @@ public class CuratorConfig {
 
         return pathChildrenCache;
     }
+
+
 }

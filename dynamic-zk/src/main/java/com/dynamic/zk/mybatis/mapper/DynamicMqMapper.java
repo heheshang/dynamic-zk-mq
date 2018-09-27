@@ -7,9 +7,10 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
-* Created by Mybatis Generator 2018/09/19
-*/
-public interface DynamicMqMapper{
+ * Created by Mybatis Generator 2018/09/19
+ */
+public interface DynamicMqMapper {
+
     long countByExample(DynamicMqExample example);
 
     int deleteByExample(DynamicMqExample example);

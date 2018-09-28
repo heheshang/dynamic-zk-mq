@@ -1,13 +1,10 @@
 package com.dynamic.zk.web;
 
-import com.dynamic.zk.mybatis.domain.DynamicMq;
-import com.dynamic.zk.mybatis.mapper.DynamicMqMapper;
 import com.dynamic.zk.service.CuratorAtomicService;
 import com.dynamic.zk.service.ZkNodeOperateService;
 import com.dynamic.zk.utils.FastJsonConvertUtil;
+import com.dynamic.zk.vo.Subscribe;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -27,8 +24,6 @@ public class TestController {
     @Autowired
     private CuratorFramework curatorFramework;
 
-    @Autowired
-    private DynamicMqMapper mqMapper;
 
     @Autowired
     private CuratorAtomicService curatorAtomicInteger;
@@ -49,12 +44,14 @@ public class TestController {
     @RequestMapping("/add")
     public void add() throws Exception {
 
-        DynamicMq mq = new DynamicMq();
+        Subscribe mq = new Subscribe();
+
         mq.setProname("test");
-        mq.setId(curatorAtomicInteger.getAtomicIntger(mq.getProname()));
+        int id = curatorAtomicInteger.getAtomicIntger(mq.getProname());
+        mq.setId(id);
         mq.setUrl("www.123.com ");
-        mq.setTopic("TopicTest2");
-        mq.setTag("TagB");
+        mq.setTopic("TopicTest");
+        mq.setTag("Tag"+id);
         mq.setGroupname("TestGroup");
         mq.setConsumeformwhere("");
         mq.setConsumethreadmin("10");
@@ -63,8 +60,8 @@ public class TestController {
         mq.setConsumemessagebatchmaxsize("");
         mq.setPullbatchsize("");
         mq.setPullinterval("");
-        mq.setBusinesskey("123");
-        mq.setStatus("1");
+        mq.setBusinesskey("consumer_"+id);
+        mq.setStatus("0");
         mq.setCreateTime(new Date());
         mq.setUpdateTime(new Date());
 
@@ -77,7 +74,7 @@ public class TestController {
     @RequestMapping("/update")
     public void update() throws Exception {
 
-        DynamicMq mq = new DynamicMq();
+        Subscribe mq = new Subscribe();
         mq.setProname("test");
         mq.setUrl("www.123.com ");
         mq.setTopic("TopicTest2");
@@ -104,7 +101,7 @@ public class TestController {
     @RequestMapping("/delete/{path}")
     public void delete(@PathVariable("path") String path) throws Exception {
 
-        zkNodeOperateService.deleteNode(basePath+ "/" + path);
+        zkNodeOperateService.deleteNode(basePath + "/" + path);
     }
 
     @RequestMapping("/delete/all")

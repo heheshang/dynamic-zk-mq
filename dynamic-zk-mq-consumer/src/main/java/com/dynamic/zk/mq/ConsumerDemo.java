@@ -1,5 +1,6 @@
 package com.dynamic.zk.mq;
 
+import com.dynamic.zk.event.MqEvent;
 import com.dynamic.zk.event.RocketmqEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,16 @@ public class ConsumerDemo {
     @EventListener(condition = "#event.msgs[0].topic=='TopicTest2' && #event.msgs[0].tags=='TagB'")
     public void rocketmqMsgListenB(RocketmqEvent event) {
 //      DefaultMQPushConsumer consumer = event.getConsumer();
+        try {
+            System.out.println("rocketmqMsgListenB 监听到一个消息达到：" + event.getMsgs().get(0).getMsgId());
+            // TODO 进行业务处理
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventListener(condition = "#event.msgs[0].topic=='TopicTest2' && #event.msgs[0].tags=='TagB'")
+    public void rocketmqMsgListenC(MqEvent event) {
         try {
             System.out.println("rocketmqMsgListenB 监听到一个消息达到：" + event.getMsgs().get(0).getMsgId());
             // TODO 进行业务处理

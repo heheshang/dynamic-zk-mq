@@ -1,14 +1,11 @@
-package com.dynamic.zk.mybatis.domain;
+package com.dynamic.zk.vo;
 
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * Created by Mybatis Generator 2018/09/19
- */
 @Data
-public class DynamicMq {
+public class Subscribe {
 
     private Integer id;
 
@@ -78,7 +75,7 @@ public class DynamicMq {
     private String businesskey;
 
     /**
-     * 状态
+     * 状态(0：启动 1：重启 2:停止 3：销毁)
      */
     private String status;
 
@@ -91,4 +88,10 @@ public class DynamicMq {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 是否顺序消费
+     */
+    private boolean isOrderly = false;
+
 }

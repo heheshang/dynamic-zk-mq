@@ -1,6 +1,5 @@
 package com.dynamic.zk;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since v1.0
  **/
 @SpringBootApplication
-@MapperScan("com.dynamic.zk.mybatis.mapper")
 public class DynamicZkApplication {
 
     public static void main(String[] args) {

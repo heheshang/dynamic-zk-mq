@@ -1,7 +1,7 @@
 package com.dynamic.zk.service;
 
-import com.dynamic.zk.mybatis.domain.DynamicMq;
 import com.dynamic.zk.utils.FastJsonConvertUtil;
+import com.dynamic.zk.vo.Subscribe;
 import lombok.extern.log4j.Log4j2;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
@@ -63,6 +63,8 @@ public class ZkNodeOperateService {
     public void deleteAllNode(String zkPath) throws Exception {
 
         curatorFramework.delete().deletingChildrenIfNeeded().forPath(zkPath);
+        List<String> childNodes = curatorFramework.getChildren().forPath(zkPath);
+
 
 
     }
@@ -82,7 +84,7 @@ public class ZkNodeOperateService {
 
                         byte[] data = curatorFramework.getData().forPath(nodePath);
 
-                        DynamicMq mq = FastJsonConvertUtil.convertJSONToObject(new String(data), DynamicMq.class);
+                        Subscribe mq = FastJsonConvertUtil.convertJSONToObject(new String(data), Subscribe.class);
 
                         assert mq != null;
                         mq.setStatus("2");
@@ -114,7 +116,7 @@ public class ZkNodeOperateService {
 
                         byte[] data = curatorFramework.getData().forPath(nodePath);
 
-                        DynamicMq mq = FastJsonConvertUtil.convertJSONToObject(new String(data), DynamicMq.class);
+                        Subscribe mq = FastJsonConvertUtil.convertJSONToObject(new String(data), Subscribe.class);
 
                         assert mq != null;
                         mq.setStatus("1");

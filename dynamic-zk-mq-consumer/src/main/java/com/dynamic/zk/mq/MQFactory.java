@@ -1,9 +1,15 @@
 package com.dynamic.zk.mq;
 
+import com.dynamic.zk.listener.MQCustomConcurrentlyListener;
+import com.dynamic.zk.listener.MQCustomeOrderlyListener;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMachineRoomNearby;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 import java.util.Map;
 
@@ -39,14 +45,14 @@ public class MQFactory {
         }
         try {
             //创建Consumer实例、订阅、注册监听、配置参数、最后装入集合
-            MQCustomConsumer consumer = new MQCustomConsumer(consumerId, groupName, namesrvAddr);
+            MQCustomConsumer consumer = new MQCustomConsumer(consumerId, groupName, namesrvAddr, topic, tag);
             consumer.subscribe(topic, tag);
 
-            if (mqListener instanceof MQCustomConcurrentlyListener){
-                consumer.registerMessageListener((MQCustomConcurrentlyListener)mqListener);
+            if (mqListener instanceof MQCustomConcurrentlyListener) {
+                consumer.registerMessageListener((MQCustomConcurrentlyListener) mqListener);
             }
-            if (mqListener instanceof MQCustomeOrderlyListener){
-                consumer.registerMessageListener((MQCustomeOrderlyListener)mqListener);
+            if (mqListener instanceof MQCustomeOrderlyListener) {
+                consumer.registerMessageListener((MQCustomeOrderlyListener) mqListener);
             }
             //设置消费者其它参数
             /**Consumer 启动后，默认从什么位置开始消费:默认CONSUME_FROM_LAST_OFFSET*/
@@ -89,6 +95,9 @@ public class MQFactory {
             if (StringUtils.isNotBlank(pullInterval)) {
                 consumer.setPullInterval(Integer.parseInt(pullInterval));
             }
+            consumer.setMessageModel(MessageModel.CLUSTERING);
+            //★★★★ 添加消费策略
+            consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueAveragely());
             consumers.put(consumerId, consumer);
             return consumer;
         } catch (Exception e) {

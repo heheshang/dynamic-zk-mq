@@ -27,16 +27,16 @@ public class MqConsumersThread implements Runnable {
     public void run() {
 
         try {
-            log.info("异步执行 MQCustomConsumer 启动");
+            log.info("异步执行 MQCustomConsumer 启动开始 ★★★ group【{}】,topic【{}】,tags【{}】",consumer.getConsumerGroup(),consumer.getTopic(),consumer.getTags());
 
-            Thread.sleep(500);
+            Thread.sleep(5000);
 
             this.consumer.start();
-            log.info("异步执行 MQCustomConsumer 启动完成");
+            log.info("异步执行 MQCustomConsumer 启动完成 ★★★ group【{}】,topic【{}】,tags【{}】",consumer.getConsumerGroup(),consumer.getTopic(),consumer.getTags());
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (MQClientException e) {
-            e.printStackTrace();
+            log.error("异步执行 MQCustomConsumer 启动失败 ×××【{}】，consumerId【{}】", consumer.getConsumerGroup(), consumer.getConsumerId());
         } finally {
             latch.countDown();
         }

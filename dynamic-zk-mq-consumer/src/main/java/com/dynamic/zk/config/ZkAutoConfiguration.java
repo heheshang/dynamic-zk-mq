@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ExecutorService;
+import javax.annotation.PostConstruct;
 
 /**
  * @author ssk www.8win.com Inc.All rights reserved
@@ -22,19 +22,17 @@ import java.util.concurrent.ExecutorService;
  * @date 2018-09-18-下午 4:51
  */
 @Configuration
-@EnableConfigurationProperties(value = {CuratorProperties.class, RocketmqProperties.class})
+@EnableConfigurationProperties(value = {CuratorProperties.class})
 public class ZkAutoConfiguration {
 
     @Autowired
     private CuratorProperties curatorProperties;
 
-    @Autowired
-    private RocketmqProperties rocketmqProperties;
 
     private static final Logger log = LoggerFactory.getLogger(RocketmqAutoConfiguration.class);
 
     @Bean(initMethod = "start", destroyMethod = "close")
-    public CuratorFramework curatorFramework() throws Exception {
+    public CuratorFramework curatorFramework()  {
 
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(curatorProperties.getBaseSleepTimeMs(), curatorProperties.getMaxRetries());
         CuratorFramework curatorFramework = CuratorFrameworkFactory.builder()
@@ -49,24 +47,5 @@ public class ZkAutoConfiguration {
     }
 
 
-    @Autowired
-    private ExecutorService executorService;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
-    @Bean
-    public PathChildrenCache pathChildrenCache(CuratorFramework cf) {
-        //建立一个PathChildrenCache缓存,第三个参数为是否接受节点数据内容 如果为false则不接受
-        PathChildrenCache pathChildrenCache = new PathChildrenCache(cf, curatorProperties.getBasePath(), true);
-        // 在初始化的时候就进行缓存监听
-        try {
-            pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
-        } catch (Exception e) {
-            log.error("初始化进行缓存监听失败");
-            e.printStackTrace();
-        }
-        pathChildrenCache.getListenable().addListener(new ChildrenCacheListener(rocketmqProperties.getNamesrvAddr(), executorService,publisher));
-
-        return pathChildrenCache;
-    }
 }

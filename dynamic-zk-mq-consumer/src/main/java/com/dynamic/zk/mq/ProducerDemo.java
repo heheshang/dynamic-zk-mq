@@ -1,5 +1,6 @@
 package com.dynamic.zk.mq;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -20,6 +21,7 @@ import java.util.List;
  * @date 2018-09-18-下午 4:29
  */
 @RestController
+@Log4j2
 public class ProducerDemo {
 
     @Autowired
@@ -84,20 +86,51 @@ public class ProducerDemo {
     @RequestMapping(value = "/sendMsgOrder", method = RequestMethod.GET)
     public void sendMsgOrder() {
 
-        Message msg = new Message("TopicTest1", // topic
-                "TagA", // tag
-                "OrderID00" + i, // key
-                ("Hello zebra mq" + i).getBytes());// body
+        Message msg = new Message("TopicTest", // topic
+                "Tag20", // tag
+                "consumer_20" + i, // key
+                ("Hello  mq" + i).getBytes());// body
         try {
             defaultProducer.send(msg, new MessageQueueSelector() {
                 @Override
                 public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
 
-                    System.out.println("MessageQueue" + arg);
+                    log.info("MessageQueue {} msgId{} ,msg{}" , arg, msg.getTransactionId(),new String(msg.getBody()));
                     int index = ((Integer) arg) % mqs.size();
                     return mqs.get(index);
                 }
             }, i);// i==arg
+            i++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @RequestMapping(value = "/sendMsg1", method = RequestMethod.GET)
+    public void sendMsg1() {
+
+        Message msg = new Message("TopicTest", // topic
+                "Tag20", // tag
+                "OrderID00" + i, // key
+                ("Hello zebra mq" + i).getBytes());// body
+        try {
+            defaultProducer.send(msg, new SendCallback() {
+
+                @Override
+                public void onSuccess(SendResult sendResult) {
+
+                    System.out.println(sendResult);
+                    // TODO 发送成功处理
+                }
+
+                @Override
+                public void onException(Throwable e) {
+
+                    System.out.println(e);
+                    // TODO 发送失败处理
+                }
+            });
             i++;
         } catch (Exception e) {
             e.printStackTrace();

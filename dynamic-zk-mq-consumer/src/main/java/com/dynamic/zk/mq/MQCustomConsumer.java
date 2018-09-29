@@ -1,5 +1,7 @@
 package com.dynamic.zk.mq;
 
+import com.dynamic.zk.listener.MQCustomConcurrentlyListener;
+import com.dynamic.zk.listener.MQCustomeOrderlyListener;
 import lombok.Data;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
@@ -16,12 +18,18 @@ public class MQCustomConsumer extends DefaultMQPushConsumer {
 
     private String consumerId;
 
-    public MQCustomConsumer(String consumerId, String groupName, String namesrvAddr) {
+    private String topic;
+
+    private String tags;
+
+    public MQCustomConsumer(String consumerId, String groupName, String namesrvAddr, String topic, String tags) {
 
         super(groupName);
         super.setInstanceName(consumerId);
         this.setNamesrvAddr(namesrvAddr);
         this.consumerId = consumerId;
+        this.topic = topic;
+        this.tags = tags;
     }
 
     public void registerMessageListener(List<MessageListener> mqListeners) {

@@ -1,6 +1,7 @@
-package com.dynamic.zk.mq;
+package com.dynamic.zk.listener;
 
 import com.dynamic.zk.event.MqEvent;
+import lombok.extern.log4j.Log4j2;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
@@ -17,6 +18,7 @@ import java.util.List;
  * @date 2018-09-28-上午 10:50
  */
 @Component
+@Log4j2
 public class MQCustomeOrderlyListener implements MessageListenerOrderly {
 
     @Autowired
@@ -24,7 +26,25 @@ public class MQCustomeOrderlyListener implements MessageListenerOrderly {
 
     @Override
     public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
-        this.publisher.publishEvent(new MqEvent(msgs));
-        return null;
+
+        log.info("topic【{}】,tags【{}】 收到消息【{}】", msgs.get(0).getTopic(),msgs.get(0).getTags(),new String(msgs.get(0).getBody()));
+
+        try {
+
+            context.setAutoCommit(true);
+
+            if (msgs.size() == 0) {
+                return ConsumeOrderlyStatus.SUCCESS;
+            }
+
+            this.publisher.publishEvent(new MqEvent(msgs));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+        }
+
+        return ConsumeOrderlyStatus.SUCCESS;
     }
 }

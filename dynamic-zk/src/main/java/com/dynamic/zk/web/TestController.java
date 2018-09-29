@@ -53,7 +53,7 @@ public class TestController {
         mq.setTopic("TopicTest");
         mq.setTag("Tag"+id);
         mq.setGroupname("TestGroup");
-        mq.setConsumeformwhere("");
+        mq.setConsumeformwhere("CONSUME_FROM_LAST_OFFSET");
         mq.setConsumethreadmin("10");
         mq.setConsumethreadmax("10");
         mq.setPullthresholdforqueue("");

@@ -120,13 +120,17 @@ public class RocketmqAutoConfiguration {
                 if (null != status) {
                     switch (status) {
                         case 0:
+                            log.info("业务处理未知");
                             return LocalTransactionState.UNKNOW;
                         case 1:
+                            log.info("业务处理完成提交消息");
                             return LocalTransactionState.COMMIT_MESSAGE;
                         case 2:
+                            log.info("业务处理异常回滚消息");
                             return LocalTransactionState.ROLLBACK_MESSAGE;
                     }
                 }
+                log.info("业务处理完成提交消息");
                 return LocalTransactionState.COMMIT_MESSAGE;
             }
         });

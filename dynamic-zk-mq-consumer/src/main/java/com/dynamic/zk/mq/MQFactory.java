@@ -97,7 +97,7 @@ public class MQFactory {
             }
             consumer.setMessageModel(MessageModel.CLUSTERING);
             //★★★★ 添加消费策略
-            consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueAveragely());
+//            consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueAveragely());
             consumers.put(consumerId, consumer);
             return consumer;
         } catch (Exception e) {

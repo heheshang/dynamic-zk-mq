@@ -68,8 +68,8 @@ public class ProducerDemo {
         SendResult sendResult = null;
         try {
             // 构造消息
-            Message msg = new Message("TopicTest2", // topic
-                    "TagB", // tag
+            Message msg = new Message("TopicTestTransaction", // topic
+                    "TagTransaction", // tag
                     "OrderID001", // key
                     ("Hello zebra mq").getBytes());// body
 

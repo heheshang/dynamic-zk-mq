@@ -1,20 +1,15 @@
 package com.dynamic.zk.config;
 
-import com.dynamic.zk.listener.ChildrenCacheListener;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @author ssk www.8win.com Inc.All rights reserved
@@ -32,7 +27,7 @@ public class ZkAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(RocketmqAutoConfiguration.class);
 
     @Bean(initMethod = "start", destroyMethod = "close")
-    public CuratorFramework curatorFramework()  {
+    public CuratorFramework curatorFramework() {
 
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(curatorProperties.getBaseSleepTimeMs(), curatorProperties.getMaxRetries());
         CuratorFramework curatorFramework = CuratorFrameworkFactory.builder()
@@ -45,7 +40,6 @@ public class ZkAutoConfiguration {
         return curatorFramework;
 
     }
-
 
 
 }

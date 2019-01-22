@@ -1,9 +1,13 @@
 package com.dynamic.zk.mq;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
+
+import java.util.List;
 
 /**
  * @author ssk www.8win.com Inc.All rights reserved
@@ -29,6 +33,8 @@ public class MQController {
             );
             //Call send message to deliver message to one of brokers.
             SendResult sendResult = producer.send(msg);
+            // 发送顺序消息
+            producer.send(msg, new IDHashMessageQueueSelector(), msg.getTransactionId());
             System.out.printf("%s%n", sendResult);
         }
         //Shut down once the producer instance is not longer in use.
@@ -41,5 +47,17 @@ public class MQController {
 
     public static void update() {
 
+    }
+
+    static class IDHashMessageQueueSelector implements MessageQueueSelector {
+
+        @Override
+        public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+
+            int id = Integer.parseInt(arg.toString());
+            int size = mqs.size();
+            int index = id % size;
+            return mqs.get(index);
+        }
     }
 }

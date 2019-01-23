@@ -5,9 +5,16 @@ import com.dynamic.zk.listener.MQCustomeOrderlyListener;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
+import org.apache.rocketmq.client.log.ClientLogger;
+import org.apache.rocketmq.common.MixAll;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+import org.apache.rocketmq.logging.InternalLogger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,6 +56,8 @@ public class MQFactory {
                 consumer.registerMessageListener((MQCustomConcurrentlyListener) mqListener);
             }
             if (mqListener instanceof MQCustomeOrderlyListener) {
+                //★★★★ 添加消费策略
+                consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueByHashAveragely());
                 consumer.registerMessageListener((MQCustomeOrderlyListener) mqListener);
             }
             //设置消费者其它参数
@@ -118,5 +127,42 @@ public class MQFactory {
             consumers.get(consumerId).shutdown();
         }
         consumers.clear();
+    }
+
+    class AllocateMessageQueueByHashAveragely extends AllocateMessageQueueAveragely {
+
+        private final InternalLogger log = ClientLogger.getLog();
+
+        @Override
+        public String getName() {
+
+            return super.getName() + "ByIDHash";
+        }
+
+        @Override
+        public List<MessageQueue> allocate(String consumerGroup, String currentCID, List<MessageQueue> mqAll, List<String> cidAll) {
+            //解析queue id
+            char idChar = consumerGroup.charAt(consumerGroup.length() - "ConsumerGroup".length() - 1);
+
+            int id = Integer.parseInt(idChar + "");
+
+            List<MessageQueue> submq = new ArrayList<>();
+
+            //根据queue id分配相应的MessageQueue
+            for (MessageQueue queue : mqAll) {
+
+                if (queue.getQueueId()==idChar||queue.getTopic().startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)){
+
+                    submq.add(queue);
+
+                }
+            }
+
+            if (submq.size()==0){
+                log.warn("allocate err:"+consumerGroup+","+currentCID+","+cidAll+","+mqAll);
+            }
+
+            return super.allocate(consumerGroup, currentCID, submq, cidAll);
+        }
     }
 }
